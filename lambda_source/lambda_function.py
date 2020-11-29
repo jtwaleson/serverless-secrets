@@ -49,6 +49,12 @@ def _serve_template(template_file, variables=None, status_code=200):
 def _check_if_crawler(user_agent):
     if "bot" in user_agent.lower():
         return True
+    if "spider" in user_agent.lower():
+        return True
+    if "crawler" in user_agent.lower():
+        return True
+    if "crawling" in user_agent.lower():
+        return True
     return False
 
 
