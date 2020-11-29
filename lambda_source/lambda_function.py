@@ -94,6 +94,9 @@ def lambda_handler(event, context):
     elif method == "GET" and event["rawPath"] == "/favicon.ico":
         return _serve_static_file("favicon.ico", content_type="image/x-icon")
 
+    elif method == "GET" and event["rawPath"] == "/robots.txt":
+        return _render("User-agent: * Disallow: /", content_type="text/plain")
+
     return _not_found()
 
 
