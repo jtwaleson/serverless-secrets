@@ -24,7 +24,7 @@ def _render(content, status_code=200, content_type="text/html"):
 
 
 def _serve_static_file(file_path, status_code=200, content_type="text/html"):
-    with open(file_path) as fh:
+    with open(file_path, "b") as fh:
         return _render(fh.read(), status_code=status_code, content_type=content_type)
 
 
@@ -46,10 +46,18 @@ def _serve_template(template_file, variables=None, status_code=200):
     return _serve_main_html(contents, status_code=status_code)
 
 
+def _check_if_crawler(user_agent):
+    if "bot" in user_agent.lower():
+        return True
+    return False
+
+
 def lambda_handler(event, context):
     print(event["rawPath"])
 
     method = event["requestContext"]["http"]["method"]
+    user_agent = event["requestContext"]["http"].get("userAgent", "")
+    is_bot = _check_if_crawler(user_agent)
 
     if method == "GET" and event["rawPath"] == "/":
         return _serve_template("create.html")
@@ -59,14 +67,17 @@ def lambda_handler(event, context):
         secret = urllib.parse.parse_qs(secret.decode("utf-8"))["secret"][0]
         return store_secret_and_display_url(secret)
 
-    elif event["rawPath"] == "/retrieve-secret":
+    elif method == "GET" and event["rawPath"] == "/retrieve-secret":
         secret_id = event.get("queryStringParameters", {}).get("id", None)
         if secret_id is None:
             return _not_found()
+        elif is_bot:
+            print("not serving secret, robot detected")
+            return _serve_main_html("<p>Sorry, it looks like you are a robot, I can not serve the secret,</p>", status_code=404)
         else:
             return retrieve_destroy_and_display_secret(secret_id)
 
-    elif event["rawPath"] == "/favicon.ico":
+    elif method == "GET" and event["rawPath"] == "/favicon.ico":
         return _serve_static_file("favicon.ico", content_type="image/x-icon")
 
     return _not_found()
@@ -95,6 +106,9 @@ def retrieve_destroy_and_display_secret(secret_id):
     )
     if "Attributes" not in results:
         return _not_found()
+
+    print(f"secret {secret_id} served and deleted")
+
     secret = results["Attributes"]["secret"]
 
     return _serve_template("retrieve-secret.html", {"secret": html.escape(secret, quote=True)})
