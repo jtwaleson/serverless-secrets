@@ -1,4 +1,3 @@
-import json
 import html
 import time
 from base64 import b64decode
@@ -16,7 +15,10 @@ db_table = boto3.resource("dynamodb").Table(DATABASE_TABLE)
 def _render(content, status_code=200, content_type="text/html"):
     return {
         "statusCode": status_code,
-        "headers": {"Content-Type": content_type},
+        "headers": {
+            "Content-Type": content_type,
+            "Strict-Transport-Security": "max-age=31536000;",
+        },
         "body": content,
     }
 
