@@ -2,13 +2,75 @@
 <html>
     <head>
         <title>Secrets</title>
+        <style>
+            body {
+                color: #bbb;
+                font: 14pt/20pt Garamond, Georgia, serif;
+                background: #333;
+            }
+            #content {
+                width: 860px;
+                margin: 20% auto auto;
+                align: center;
+            }
+            input[type=text] {
+                border: solid 5px #25587E;
+                height: 25px;
+                width: 350px;
+            }
+            hr {
+                width: 270px;
+                margin: 15px 0;
+                opacity: 0.3;
+                filter:alpha(opacity=30);
+            }
+            a {
+                color: #bbb;
+            }
+            input {
+                background-color: #ccc;
+                font: 14pt/20pt Garamond, Georgia, serif;
+            }
+
+            .secret {
+                background-color: #333;
+                color: orange;
+                width: 800px !important;
+            }
+
+            .secret_url {
+                color: black;
+                background-color: #ccc;
+                width: 800px !important;
+            }
+        </style>
+        <script>
+            function copyToClipboard(elementId) {
+                var copyText = document.getElementById(elementId);
+                copyText.select();
+                copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+                /* Copy the text inside the text field */
+                document.execCommand("copy");
+                alert("Copied to clipboard!");
+            }
+        </script>
     </head>
     <body>
-        <h1>Secrets Exchange</h1>
-        <p>Enter your secret here</p>
-        <form method="POST" action="/create-secret">
-            <input type="textarea" name="secret" cols="80" rows="4"/>
-            <input type="submit"/>
-        </form>
+        <div id="content">
+            <center>
+                <h1>Welcome to easee's Secret Exchange</h1>
+                {content}
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <a href="/">Back to main page</a>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <a href="https://github.com/jtwaleson/serverless-secrets">Fork me on Github</a>
+            </center>
+        </div>
     </body>
 </html>
