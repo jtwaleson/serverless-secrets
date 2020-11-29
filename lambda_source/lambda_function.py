@@ -1,6 +1,6 @@
 import html
 import time
-from base64 import b64decode
+from base64 import b64decode, b64encode
 import uuid
 import urllib.parse
 import boto3
@@ -24,8 +24,16 @@ def _render(content, status_code=200, content_type="text/html"):
 
 
 def _serve_static_file(file_path, status_code=200, content_type="text/html"):
-    with open(file_path, "b") as fh:
-        return _render(fh.read(), status_code=status_code, content_type=content_type)
+    with open(file_path, "rb") as fh:
+        return {
+            "statusCode": status_code,
+            "isBase64Encoded": True,
+            "headers": {
+                "Content-Type": content_type,
+                "Strict-Transport-Security": "max-age=31536000;",
+            },
+            "body": b64encode(fh.read()).decode("utf-8"),
+        }
 
 
 def _not_found():
