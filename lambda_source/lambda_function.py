@@ -4,8 +4,6 @@ from base64 import b64decode, b64encode
 import uuid
 import urllib.parse
 import boto3
-from boto3.dynamodb.conditions import Key
-
 
 DATABASE_TABLE = "secrets"
 
