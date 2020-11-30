@@ -67,11 +67,10 @@ def _check_if_crawler(user_agent):
 
 
 def lambda_handler(event, context):
-    print(event["rawPath"])
-
     method = event["requestContext"]["http"]["method"]
     user_agent = event["requestContext"]["http"].get("userAgent", "")
     is_bot = _check_if_crawler(user_agent)
+    print(event["rawPath"], method, user_agent)
 
     if method == "GET" and event["rawPath"] == "/":
         return _serve_template("create.html")
