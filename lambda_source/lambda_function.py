@@ -37,7 +37,9 @@ def _serve_static_file(file_path, status_code=200, content_type="text/html"):
 
 
 def _not_found():
-    return _serve_main_html("<p>Sorry, we could not find what you were looking for</p>", status_code=404)
+    return _serve_main_html(
+        "<p>Sorry, we could not find what you were looking for</p>", status_code=404
+    )
 
 
 def _serve_main_html(content, status_code=200):
@@ -87,7 +89,10 @@ def lambda_handler(event, context):
             return _not_found()
         elif is_bot:
             print("not serving secret, robot detected")
-            return _serve_main_html("<p>Sorry, it looks like you are a robot, I can not serve the secret,</p>", status_code=404)
+            return _serve_main_html(
+                "<p>Sorry, it looks like you are a robot, I can not serve the secret,</p>",
+                status_code=404,
+            )
         else:
             return retrieve_destroy_and_display_secret(secret_id)
 
@@ -117,10 +122,7 @@ def store_secret_and_display_url(secret, expire_in_hours=168):
 
 
 def retrieve_destroy_and_display_secret(secret_id):
-    results = db_table.delete_item(
-        Key={"uuid": secret_id},
-        ReturnValues="ALL_OLD",
-    )
+    results = db_table.delete_item(Key={"uuid": secret_id}, ReturnValues="ALL_OLD",)
     if "Attributes" not in results:
         return _not_found()
 
@@ -128,4 +130,6 @@ def retrieve_destroy_and_display_secret(secret_id):
 
     secret = results["Attributes"]["secret"]
 
-    return _serve_template("retrieve-secret.html", {"secret": html.escape(secret, quote=True)})
+    return _serve_template(
+        "retrieve-secret.html", {"secret": html.escape(secret, quote=True)}
+    )
