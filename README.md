@@ -13,5 +13,3 @@ Design goals
 - Scraping bots should not be able to download the secrets.
 - There should be no cookies or externally hosted CSS, JS or fonts.
 - It should be easy to use.
-- There should be no dependencies except what comes included in the Lambda python.
-- Secrets should not be plaintext visible to operators that inspect the AWS DynamoDB interface.

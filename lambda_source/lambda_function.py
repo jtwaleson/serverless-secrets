@@ -108,10 +108,7 @@ def store_secret_and_display_url(secret, expire_in_hours=168):
     db_table.put_item(
         Item={
             "uuid": secret_id,
-            # Use base64 encoding so that data is not visible plaintext
-            # to operators in the AWS console. Ideally we use client side
-            # encryption but that would add external dependencies.
-            "secret": b64encode(secret.encode("utf-8")),
+            "secret": secret,
             "expireAt": int(time.time()) + expire_in_hours * 3600,
         }
     )
@@ -128,7 +125,7 @@ def retrieve_destroy_and_display_secret(secret_id):
 
     print(f"secret {secret_id} served and deleted")
 
-    secret = b64decode(results["Attributes"]["secret"]).decode("utf-8")
+    secret = results["Attributes"]["secret"]
 
     return _serve_template(
         "retrieve-secret.html", {"secret": html.escape(secret, quote=True)}
